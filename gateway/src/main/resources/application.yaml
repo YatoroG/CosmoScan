@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: file-storing-sys.service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
+
+        - id: file-analysis-sys.service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/**
