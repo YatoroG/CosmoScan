@@ -21,16 +21,21 @@ services:
   file-analysis-service:
     build: ./file-analysis-service
     container_name: file-analysis-service
+    depends_on:
+      analysis-db:
+        condition: service_healthy
     environment:
       - SERVER_PORT=8082
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/analysis_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://analysis-db:5432/analysis_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
     ports:
       - "8082:8082"
     networks:
       - cosmo-net
+    volumes:
+      - uploads_data:/app/uploads
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/actuator/health"]
       interval: 10s
@@ -41,31 +46,36 @@ services:
   file-storing-service:
     build: ./file-storing-service
     container_name: file-storing-service
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       - SERVER_PORT=8081
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/storing_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/storing_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - APP_FILE-ANALYSIS-SERVICE_URL=http://file-analysis-service:8082
     ports:
       - "8081:8081"
     networks:
       - cosmo-net
+    volumes:
+      - uploads_data:/app/uploads
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/actuator/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
 
-  db:
+  postgres:
     image: postgres:16-alpine
     container_name: postgres-db
     environment:
-      - POSTGRES_DB=satellite_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_DB: storing_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     networks:
@@ -73,11 +83,27 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d satellite_db" ]
-      interval: 10s
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d storing_db" ]
+      interval: 5s
       timeout: 5s
       retries: 5
-      start_period: 30s
+
+  analysis-db:
+    image: postgres:16-alpine
+    container_name: analysis-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: analysis_db
+      POSTGRES_USER: postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - cosmo-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d analysis_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   cosmo-net:
@@ -85,3 +111,4 @@ networks:
 
 volumes:
   pgdata:
+  uploads_data:
