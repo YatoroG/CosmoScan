@@ -1,0 +1,10 @@
+package sys.repository;
+
+import java.util.Optional;
+import sys.model.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
+    Optional<Student> findStudentByAllFields(String lastName, String firstName,
+                                             String patronymic, String group);
+}
