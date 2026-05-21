@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    environment:
+      - SERVER_PORT=8080
+      - STORING_SERVICE_URL=http://file-storing-service:8081
+      - ANALYSIS_SERVICE_URL=http://file-analysis-service:8082
+    ports:
+      - "8080:8080"
+    networks:
+      - cosmo-net
+    depends_on:
+      file-storing-service:
+        condition: service_healthy
+      file-analysis-service:
+        condition: service_healthy
+
+  file-analysis-service:
+    build: ./file-analysis-service
+    container_name: file-analysis-service
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cosmo_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+    ports:
+      - "8082:8082"
+    networks:
+      - cosmo-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  file-storing-service:
+    build: ./file-storing-service
+    container_name: file-storing-service
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cosmo_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - APP_FILE-ANALYSIS-SERVICE_URL=http://file-analysis-service:8082
+    ports:
+      - "8081:8081"
+    networks:
+      - cosmo-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    environment:
+      - POSTGRES_DB=satellite_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - cosmo-net
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d satellite_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  cosmo-net:
+    driver: bridge
+
+volumes:
+  pgdata:
