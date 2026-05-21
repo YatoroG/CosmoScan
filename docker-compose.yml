@@ -23,7 +23,7 @@ services:
     container_name: file-analysis-service
     environment:
       - SERVER_PORT=8082
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cosmo_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/analysis_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
@@ -43,7 +43,7 @@ services:
     container_name: file-storing-service
     environment:
       - SERVER_PORT=8081
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cosmo_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/storing_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
