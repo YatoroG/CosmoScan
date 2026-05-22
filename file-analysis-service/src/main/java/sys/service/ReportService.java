@@ -5,15 +5,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import sys.model.AnalysisStatus;
-import sys.model.Report;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sys.model.AnalysisStatus;
+import sys.model.Report;
 import sys.repository.ReportRepository;
+import sys.utils.exception.EntityNotFoundException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,13 +26,16 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     @Transactional(readOnly = true)
-    public Optional<Report> getReportById(Long id) {
-        return reportRepository.findById(id);
+    public Report getReportById(Long id) {
+        return reportRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Отчет с id = " + id + " не найден"));
     }
 
     @Transactional(readOnly = true)
-    public Optional<Report> getReportByDocumentId(Long documentId) {
-        return reportRepository.findByDocumentId(documentId);
+    public Report getReportByDocumentId(Long documentId) {
+        return reportRepository.findByDocumentId(documentId)
+                .orElseThrow(() -> new EntityNotFoundException("Отчет для документа с id = " +
+                        documentId + " не найден"));
     }
 
     public List<Report> getAllReports() {
@@ -61,12 +66,13 @@ public class ReportService {
                 }
             } else {
                 status = AnalysisStatus.FAILED;
-                message.append("Файл не имеет расширения. ");
+                message.append("Документ не имеет расширения. ");
             }
 
         } catch (IOException e) {
+            log.error("Ошибка чтения документа: {}", e.getMessage());
             status = AnalysisStatus.FAILED;
-            message.append("Ошибка чтения файла: ").append(e.getMessage());
+            message.append("Ошибка чтения документа: ").append(e.getMessage());
         }
         Report report = Report.builder().documentId(documentId)
                 .fileFormat(fileFormat).fileSize(fileSize).status(status)

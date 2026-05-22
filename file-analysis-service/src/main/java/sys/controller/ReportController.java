@@ -2,13 +2,15 @@ package sys.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import sys.model.Report;
-import sys.model.requests.AnalysisRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sys.model.Report;
+import sys.model.requests.AnalysisRequest;
 import sys.service.ReportService;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/analysis")
 @RequiredArgsConstructor
@@ -16,17 +18,13 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/overview/{id}")
-    public ResponseEntity<Report> getReportById(@PathVariable Long id) {
-        return reportService.getReportById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Report getReportById(@PathVariable Long id) {
+        return reportService.getReportById(id);
     }
 
-    @GetMapping("/overview/{documentId}")
-    public ResponseEntity<Report> getReportByDocumentId(@PathVariable Long documentId) {
-        return reportService.getReportByDocumentId(documentId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/document/{documentId}")
+    public Report getReportByDocumentId(@PathVariable Long documentId) {
+        return reportService.getReportByDocumentId(documentId);
     }
 
     @GetMapping("/overview")
@@ -35,9 +33,8 @@ public class ReportController {
     }
 
     @PostMapping(path = "/launch")
-    public ResponseEntity<Report> launchAnalysis(@RequestBody AnalysisRequest request) {
-        Report newReport = reportService.addReport(request.documentId(), request.filePath());
-        return ResponseEntity.status(HttpStatus.CREATED).body(newReport);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Report launchAnalysis(@RequestBody AnalysisRequest request) {
+        return reportService.addReport(request.documentId(), request.filePath());
     }
-
 }

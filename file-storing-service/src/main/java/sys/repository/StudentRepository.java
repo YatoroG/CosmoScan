@@ -1,8 +1,8 @@
 package sys.repository;
 
 import java.util.Optional;
-import sys.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
+import sys.model.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByLastNameAndFirstNameAndPatronymicAndGroupName(String lastName,

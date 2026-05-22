@@ -4,16 +4,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 import sys.model.Document;
 import sys.model.Student;
 import sys.model.requests.AnalysisLaunchRequest;
 import sys.model.requests.DocumentUpdateRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 import sys.repository.DocumentRepository;
 import sys.repository.StudentRepository;
+import sys.utils.exception.EntityNotFoundException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,8 +26,9 @@ public class DocumentService {
     private final RestClient analysisRestClient;
 
     @Transactional(readOnly = true)
-    public Optional<Document> getDocumentById(Long id) {
-        return documentRepository.findById(id);
+    public Document getDocumentById(Long id) {
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Документ с id = " + id + " не найден"));
     }
 
     @Transactional(readOnly = true)
@@ -36,7 +40,7 @@ public class DocumentService {
     public String getFilePathById(Long id) {
         return documentRepository.findById(id)
                 .map(Document::getFilePath)
-                .orElseThrow(() -> new RuntimeException("Документ с id = " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Документ с id = " + id + " не найден"));
     }
 
     @Transactional(readOnly = true)
@@ -60,14 +64,14 @@ public class DocumentService {
         Document savedDocument = documentRepository.save(document);
 
         try {
+            log.info("Запрос на анализ документа c id = {}", savedDocument.getId());
             analysisRestClient.post()
                     .uri("/api/analysis/launch")
                     .body(new AnalysisLaunchRequest(savedDocument.getId(), savedDocument.getFilePath()))
                     .retrieve()
                     .toBodilessEntity();
         } catch (Exception e) {
-            // Если анализ не запустился, документ всё равно считается загруженным
-            System.err.println("Сервис анализа недоступен: " + e.getMessage());
+            log.error("file-analysis-service недоступен, ошибка: {}", e.getMessage());
         }
 
         return savedDocument;
@@ -75,7 +79,7 @@ public class DocumentService {
 
     public Document updateDocument(Long id, DocumentUpdateRequest request) {
         Document document = documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Документ с id = " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Документ с id = " + id + " не найден"));
         if (request.filePath() != null)  {
             document.setFilePath(request.filePath());
         }
@@ -94,7 +98,7 @@ public class DocumentService {
 
     public void deleteDocument(Long id) {
         if (!documentRepository.existsById(id)) {
-            throw new RuntimeException("Документ с id = " + id + " не найден");
+            throw new EntityNotFoundException("Документ с id = " + id + " не найден");
         }
         documentRepository.deleteById(id);
     }

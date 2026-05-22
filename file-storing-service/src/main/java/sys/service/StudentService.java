@@ -1,14 +1,16 @@
 package sys.service;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import sys.model.Student;
-import sys.model.requests.StudentUpdateRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sys.model.Student;
+import sys.model.requests.StudentUpdateRequest;
 import sys.repository.StudentRepository;
+import sys.utils.exception.EntityNotFoundException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -16,14 +18,18 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     @Transactional(readOnly = true)
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Студент с id = " + id + " не найден"));
     }
 
     @Transactional(readOnly = true)
-    public Optional<Student> getStudentByNameAndGroup(String lastName, String firstName, String patronymic, String groupName) {
+    public Student getStudentByNameAndGroup(String lastName, String firstName, String patronymic, String groupName) {
         return studentRepository.findByLastNameAndFirstNameAndPatronymicAndGroupName(
-                lastName, firstName, patronymic, groupName);
+                lastName, firstName, patronymic, groupName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Студент с именем '" + lastName + " " + firstName + " " +
+                                patronymic + "' из группы '" + groupName + "' не найден"));
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +45,7 @@ public class StudentService {
 
     public Student updateStudent(Long id, StudentUpdateRequest request) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Студент с id = " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Студент с id = " + id + " не найден"));
         if (request.lastName() != null) {
             student.setLastName(request.lastName());
         }
@@ -57,7 +63,7 @@ public class StudentService {
 
     public void deleteStudent(Long id) {
         if (!studentRepository.existsById(id)) {
-            throw new RuntimeException("Студент с id = " + id + " не найден");
+            throw new EntityNotFoundException("Студент с id = " + id + " не найден");
         }
         studentRepository.deleteById(id);
     }
