@@ -29,4 +29,8 @@ public class Report {
 
     @Column(name = "error_message", nullable = true)
     private String errorMessage;
+
+    @Lob
+    @Column(name = "word_cloud", columnDefinition = "bytea")
+    private byte[] wordCloud;
 }

@@ -4,11 +4,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sys.model.Report;
 import sys.model.requests.AnalysisRequest;
 import sys.service.ReportService;
+import sys.utils.exception.EntityNotFoundException;
 
 @Slf4j
 @RestController
@@ -22,7 +23,7 @@ public class ReportController {
         return reportService.getReportById(id);
     }
 
-    @GetMapping("/document/{documentId}")
+    @GetMapping("/overview/{documentId}/document")
     public Report getReportByDocumentId(@PathVariable Long documentId) {
         return reportService.getReportByDocumentId(documentId);
     }
@@ -30,6 +31,15 @@ public class ReportController {
     @GetMapping("/overview")
     public List<Report> getAllReports() {
         return reportService.getAllReports();
+    }
+
+    @GetMapping(value = "/overview/{id}/cloud", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getWordCloudImage(@PathVariable Long id) {
+        Report report = reportService.getReportById(id);
+        if (report.getWordCloud() == null) {
+            throw new EntityNotFoundException("");
+        }
+        return report.getWordCloud();
     }
 
     @PostMapping(path = "/launch")

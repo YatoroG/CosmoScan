@@ -24,6 +24,7 @@ public class ReportService {
     private static final long MAX_FILE_SIZE = 1_048_576;
 
     private final ReportRepository reportRepository;
+    private final WordCloudService worldCloudService;
 
     @Transactional(readOnly = true)
     public Report getReportById(Long id) {
@@ -38,6 +39,7 @@ public class ReportService {
                         documentId + " не найден"));
     }
 
+    @Transactional(readOnly = true)
     public List<Report> getAllReports() {
         return reportRepository.findAll();
     }
@@ -74,9 +76,15 @@ public class ReportService {
             status = AnalysisStatus.FAILED;
             message.append("Ошибка чтения документа: ").append(e.getMessage());
         }
+
+        byte[] cloud = null;
+        if (status == AnalysisStatus.SUCCESS && "txt".equalsIgnoreCase(fileFormat)) {
+            cloud = worldCloudService.generate(path);
+        }
+
         Report report = Report.builder().documentId(documentId)
                 .fileFormat(fileFormat).fileSize(fileSize).status(status)
-                .errorMessage(message.toString()).build();
+                .errorMessage(message.toString()).wordCloud(cloud).build();
         return reportRepository.save(report);
     }
 }
