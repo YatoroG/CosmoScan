@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   gateway:
     build: ./gateway
@@ -14,9 +12,9 @@ services:
       - cosmo-net
     depends_on:
       file-storing-service:
-        condition: service_healthy
+        condition: service_started
       file-analysis-service:
-        condition: service_healthy
+        condition: service_started
 
   file-analysis-service:
     build: ./file-analysis-service

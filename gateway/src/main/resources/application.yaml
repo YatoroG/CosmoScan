@@ -5,12 +5,20 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: file-storing-sys.service
-          uri: http://localhost:8081
+        - id: file-storing-service
+          uri: http://file-storing-service:8081
           predicates:
-            - Path=/api/**
+            - Path=/api/storage/**, /v3/api-docs/storage
 
-        - id: file-analysis-sys.service
-          uri: http://localhost:8082
+        - id: file-analysis-service
+          uri: http://file-analysis-service:8082
           predicates:
-            - Path=/api/**
+            - Path=/api/analysis/**, /v3/api-docs/analysis
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Storing Service
+        url: /v3/api-docs/storage
+      - name: Analysis Service
+        url: /v3/api-docs/analysis
