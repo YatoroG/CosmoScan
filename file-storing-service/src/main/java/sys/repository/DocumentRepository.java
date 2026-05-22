@@ -5,5 +5,5 @@ import sys.model.Document;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-    List<Document> findAllDocumentsByStudent(Long studentId);
+    List<Document> findAllDocumentsByStudentId(Long studentId);
 }

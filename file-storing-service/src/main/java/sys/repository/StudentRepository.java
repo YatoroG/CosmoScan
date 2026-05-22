@@ -5,6 +5,8 @@ import sys.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    Optional<Student> findStudentByAllFields(String lastName, String firstName,
-                                             String patronymic, String group);
+    Optional<Student> findByLastNameAndFirstNameAndPatronymicAndGroupName(String lastName,
+                                                                          String firstName,
+                                                                          String patronymic,
+                                                                          String groupName);
 }

@@ -29,7 +29,7 @@ public class DocumentService {
 
     @Transactional(readOnly = true)
     public List<Document> getDocumentsByStudentId(Long studentId) {
-        return documentRepository.findAllDocumentsByStudent(studentId);
+        return documentRepository.findAllDocumentsByStudentId(studentId);
     }
 
     @Transactional(readOnly = true)
@@ -46,10 +46,11 @@ public class DocumentService {
 
     public Document addDocument(String filePath, String fileName, String lastName,
                                 String firstName, String patronymic, String groupName) {
-        Student student = studentRepository.findStudentByAllFields(lastName, firstName, patronymic, groupName)
+        Student student = studentRepository.findByLastNameAndFirstNameAndPatronymicAndGroupName(
+                        lastName, firstName, patronymic, groupName)
                 .orElseGet(() -> {Student newStudent = Student.builder()
-                                .lastName(lastName).firstName(firstName).patronymic(patronymic)
-                                .groupName(groupName).build();
+                        .lastName(lastName).firstName(firstName).patronymic(patronymic)
+                        .groupName(groupName).build();
                     return studentRepository.save(newStudent);}
                 );
 

@@ -22,7 +22,8 @@ public class StudentService {
 
     @Transactional(readOnly = true)
     public Optional<Student> getStudentByNameAndGroup(String lastName, String firstName, String patronymic, String groupName) {
-        return studentRepository.findStudentByAllFields(lastName, firstName, patronymic, groupName);
+        return studentRepository.findByLastNameAndFirstNameAndPatronymicAndGroupName(
+                lastName, firstName, patronymic, groupName);
     }
 
     @Transactional(readOnly = true)
