@@ -2,6 +2,8 @@ package sys.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import sys.utils.AnalysisStatusConverter;
 
 @Entity
@@ -33,6 +35,7 @@ public class Report {
     private String errorMessage;
 
     @Lob
-    @Column(name = "word_cloud", columnDefinition = "bytea")
+    @Column(name = "word_cloud")
+    @JdbcTypeCode(SqlTypes.BINARY)
     private byte[] wordCloud;
 }

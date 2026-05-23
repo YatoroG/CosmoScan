@@ -14,7 +14,7 @@ import sys.service.StudentService;
 public class StudentController {
     private final StudentService studentService;
 
-    @GetMapping("/search_by_id/{student_id}")
+    @GetMapping("/search_by_id/{id}")
     public Student getStudentById(@PathVariable Long id) {
         return studentService.getStudentById(id);
     }
