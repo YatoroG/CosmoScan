@@ -53,7 +53,7 @@ public class ReportService {
 
         try {
             fileSize = Files.size(filePath);
-            if (fileSize > MAX_FILE_SIZE) {
+            if (fileSize >= MAX_FILE_SIZE) {
                 status = AnalysisStatus.FAILED;
                 message.append("Размер документа превышает 1 МБ.");
             }

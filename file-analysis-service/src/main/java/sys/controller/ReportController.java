@@ -37,7 +37,7 @@ public class ReportController {
     public byte[] getWordCloudImage(@PathVariable Long id) {
         Report report = reportService.getReportById(id);
         if (report.getWordCloud() == null) {
-            throw new EntityNotFoundException("");
+            throw new EntityNotFoundException("Не найдено облако слов");
         }
         return report.getWordCloud();
     }
