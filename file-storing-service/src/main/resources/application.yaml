@@ -35,3 +35,5 @@ spring:
 springdoc:
   api-docs:
     path: /v3/api-docs/storage
+  swagger-ui:
+    server-url: http://localhost:8080

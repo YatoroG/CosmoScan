@@ -12,6 +12,8 @@ WORKDIR /app
 
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 
+RUN mkdir -p /app/uploads && chown -R appuser:appgroup /app/uploads
+
 COPY --from=builder --chown=appuser:appgroup /app/build/libs/*.jar app.jar
 
 EXPOSE 8081
