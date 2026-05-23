@@ -1,0 +1,212 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "http://file-analysis-service:8082",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/api/analysis/launch": {
+            "post": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "launchAnalysis",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnalysisRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/analysis/overview": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "getAllReports",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Report"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/analysis/overview/{id}": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "getReportById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/analysis/overview/{id}/cloud": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "getWordCloudImage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "image/png": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/analysis/overview/{documentId}/document": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "getReportByDocumentId",
+                "parameters": [
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AnalysisRequest": {
+                "type": "object",
+                "properties": {
+                    "documentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "filePath": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Report": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "documentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fileSize": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fileFormat": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "SUCCESS",
+                            "FAILED"
+                        ]
+                    },
+                    "errorMessage": {
+                        "type": "string"
+                    },
+                    "wordCloud": {
+                        "type": "string",
+                        "format": "byte"
+                    }
+                }
+            }
+        }
+    }
+}
