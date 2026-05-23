@@ -13,7 +13,7 @@ CREATE TABLE reports (
     file_format VARCHAR(10) NOT NULL,
     status_id BIGINT REFERENCES status(id) ON DELETE CASCADE,
     error_message VARCHAR(255),
-    world_cloud BYTEA
+    word_cloud BYTEA
 );
 
 INSERT INTO status (status_name) VALUES ('SUCCESS'), ('FAILED');

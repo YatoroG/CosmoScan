@@ -20,7 +20,7 @@ import sys.utils.exception.StorageException;
 @Service
 @RequiredArgsConstructor
 public class StorageService {
-    private final Path rootLocation = Paths.get("uploads");
+    private final Path rootLocation = Paths.get("/app/uploads");
 
     public Resource getDocument(String path) {
         log.info("Запрос на скачивание документа по пути = {}", path);

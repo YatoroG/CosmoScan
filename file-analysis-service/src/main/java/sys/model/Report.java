@@ -2,6 +2,7 @@ package sys.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sys.utils.AnalysisStatusConverter;
 
 @Entity
 @Table(name = "reports")
@@ -24,7 +25,8 @@ public class Report {
     @Column(name = "file_format", nullable = false)
     private String fileFormat;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = AnalysisStatusConverter.class)
+    @Column(name = "status_id", nullable = false)
     private AnalysisStatus status;
 
     @Column(name = "error_message", nullable = true)
