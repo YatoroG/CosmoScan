@@ -1,6 +1,6 @@
 # API
 
-## File storing sys.service
+## File storing service
 
 | Команда | Запрос                                 | Возврат                     | Примечание                                                                   |
 |---------|----------------------------------------|-----------------------------|------------------------------------------------------------------------------|
@@ -17,17 +17,19 @@
 | DELETE  | `api/storage/documents/{documentId}`   | -                           | Удаление документа                                                           |
 | DELETE  | `api/storage/students/{studentId}`     | -                           | Удаление студента (каскадное удаление его документов)                        |
 
-## File analysis sys.service
+## File analysis service
 
-| Команда | Запрос                               | Возврат                   | Примечание                                     |
-|---------|--------------------------------------|---------------------------|------------------------------------------------|
-| GET     | `api/analysis/overview`              | Отчет обо всех документах | Получение отчета со всеми документами          |
-| GET     | `api/analysis/overview/{documentId}` | Отчет об одном документе  | Получение отчета об одном конкретном документе |
-| POST    | `api/analysis/launch`                | JSON метаданных           | Запуск анализа документа                       |
+| Команда | Запрос                                        | Возврат                   | Примечание                                     |
+|---------|-----------------------------------------------|---------------------------|------------------------------------------------|
+| GET     | `api/analysis/overview`                       | Отчет обо всех документах | Получение отчета со всеми документами          |
+| GET     | `api/analysis/overview/{id}`                  | Отчет об одном документе  | Получение отчета по его id                     |
+| GET     | `api/analysis/overview/{id}/cloud`            | Облако слов на картинке   | Получение картинки с облаком слов              |
+| GET     | `api/analysis/overview/{documentId}/document` | Отчет об одном документе  | Получение отчета о документе по его id         |
+| POST    | `api/analysis/launch`                         | JSON метаданных           | Запуск анализа документа                       |
 
 ## Database
 
-### File storing sys.service
+### File storing service
 
 #### Students
 
@@ -49,7 +51,7 @@
 | student_id  | BigInt     | FK, ID студента    |
 | upload_date | Timestamp  | Дата добавления    |
 
-### File analysis sys.service
+### File analysis service
 
 #### Reports
 
@@ -61,6 +63,7 @@
 | file_format   | Varchar    | Формат документа |
 | status_id     | BigInt     | FK, ID статуса   |
 | error_message | Varchar    | Сообщение        |
+| word_cloud    | Bytea      | Облако слов      |
 
 #### Status
 

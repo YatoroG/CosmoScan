@@ -20,7 +20,7 @@ import sys.utils.exception.EntityNotFoundException;
 @RequiredArgsConstructor
 @Transactional
 public class ReportService {
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "txt", "docs");
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "txt", "docx");
     private static final long MAX_FILE_SIZE = 1_048_576;
 
     private final ReportRepository reportRepository;

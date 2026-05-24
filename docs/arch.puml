@@ -1,0 +1,45 @@
+@startuml "Архитектура CosmoScan"
+
+skinparam dpi 200
+
+skinparam DatabaseBackgroundColor #E6F3FF
+skinparam StorageBackgroundColor #FFF2CC
+skinparam ComponentBackgroundColor #dddddd
+skinparam nodesep 200
+skinparam ranksep 10
+
+actor "Пользователь" as user
+
+component "gateway" as gw {
+    port 8080
+}
+
+package "Микросервисы" as micro {
+    component "file-storing-service" as storing
+    component "file-analysis-service" as analysis
+}
+
+node "Слой данных" as data {
+    database "storing_db" as storing_db
+    database "analysis_db" as analysis_db
+    storage "Shared Docker Volume\n(/app/uploads)" as docker
+}
+
+cloud "Внешний ресурс\nдля облака слов" {
+    component "QuickChart.io" as quickchart
+}
+
+user --> 8080
+
+gw -left-> storing : /api/storage/**
+gw -down-> analysis : /api/analysis/**
+
+storing --> storing_db
+storing --> docker : "Сохранить документ"
+storing ..> analysis : "REST /launch"
+
+analysis -down-> analysis_db
+analysis --> docker : "Прочитать документ"
+analysis .right.> quickchart : "POST /wordcloud"
+
+@enduml
