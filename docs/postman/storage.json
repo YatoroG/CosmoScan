@@ -1,0 +1,567 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "http://file-storing-service:8081",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/api/storage/students/{student_id}": {
+            "put": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "updateStudent",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StudentUpdateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Student"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "deleteStudent",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/api/storage/documents/{id}": {
+            "get": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "getDocumentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "updateDocument",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DocumentUpdateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "deleteDocument",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/api/storage/students": {
+            "get": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "getAllStudents",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Student"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "addStudent",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StudentUpdateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Student"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/documents/upload": {
+            "post": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "addDocument",
+                "parameters": [
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "patronymic",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "file"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/students/search_by_name_and_group": {
+            "get": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "getStudentByNameAndGroup",
+                "parameters": [
+                    {
+                        "name": "lastName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "patronymic",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "groupName",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Student"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/students/search_by_id/{id}": {
+            "get": {
+                "tags": [
+                    "student-controller"
+                ],
+                "operationId": "getStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Student"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/documents": {
+            "get": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "getAllDocuments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Document"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/documents/{id}/path": {
+            "get": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "getFilePathById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/documents/{id}/download": {
+            "get": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "downloadDocument",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/storage/documents/student/{id}": {
+            "get": {
+                "tags": [
+                    "document-controller"
+                ],
+                "operationId": "getDocumentsByStudentId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Document"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StudentUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "patronymic": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Document": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "fileName": {
+                        "type": "string"
+                    },
+                    "student": {
+                        "$ref": "#/components/schemas/Student"
+                    },
+                    "uploadDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Student": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "patronymic": {
+                        "type": "string"
+                    },
+                    "groupName": {
+                        "type": "string"
+                    },
+                    "documents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Document"
+                        }
+                    }
+                }
+            },
+            "DocumentUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "filePath": {
+                        "type": "string"
+                    },
+                    "fileName": {
+                        "type": "string"
+                    },
+                    "studentId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "uploadDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            }
+        }
+    }
+}

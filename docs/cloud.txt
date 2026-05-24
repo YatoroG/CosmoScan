@@ -1,0 +1,1 @@
+Java is a high-level, class-based, object-oriented programming language. Java is designed to have as few implementation dependencies as possible. Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications. Spring Cloud Gateway provides a library for building an API Gateway on top of Spring WebFlux.

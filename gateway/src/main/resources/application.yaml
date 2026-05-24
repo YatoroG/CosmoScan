@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: file-storing-service
+          uri: http://file-storing-service:8081
+          predicates:
+            - Path=/api/storage/**, /v3/api-docs/storage
+
+        - id: file-analysis-service
+          uri: http://file-analysis-service:8082
+          predicates:
+            - Path=/api/analysis/**, /v3/api-docs/analysis
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Storing Service
+        url: /v3/api-docs/storage
+      - name: Analysis Service
+        url: /v3/api-docs/analysis

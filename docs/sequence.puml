@@ -1,0 +1,32 @@
+@startuml "Последовательность CosmoScan"
+
+skinparam dpi 200
+
+actor "Пользователь" as user
+participant "gateway" as gw
+participant "file-storing-service" as storing
+participant "file-analysis-service" as analysis
+database "storing_db" as storing_db
+database "analysis_db" as analysis_db
+entity "quickchart" as qc
+
+user -> gw : POST /upload (документ + студент)
+gw -> storing : Пересылка запроса
+storing -> storing : Сохранение файла на диск
+storing -> storing_db : Сохранение метаданных
+storing -> analysis : POST /launch (id, path)
+
+activate analysis
+analysis -> analysis : Чтение файла с диска
+analysis -> qc : POST /wordcloud
+qc --> analysis : PNG Image
+analysis -> analysis_db : Сохранение отчета и картинки
+deactivate analysis
+
+storing --> user : 201 Created (id документа)
+
+user -> gw : GET /overview/{id}/cloud
+gw -> analysis : Запрос картинки
+analysis -> analysis_db : Получение byte[]
+analysis --> user : image/png
+@enduml
