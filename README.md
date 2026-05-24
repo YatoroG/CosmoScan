@@ -167,11 +167,17 @@
 
 Результат сохраняется в базу данных `analysis_db` в формате `BYTEA` и выдается в виде PNG-изображения по запросу `api/analysis/overview/{id}/cloud`.
 
+Для текста из файла [`cloud.txt`](docs/cloud.txt) получилось следующее облако слов: 
+
+![Облако слов для файла [`cloud.txt`](docs/cloud.txt)](docs/cloud.png)
+
 ## Тестирование
 
 ### Юнит-тесты
 
 Основные сервисы и контроллеры были покрыты юнит-тестами с использованием мока. Общий процент покрытия по JaCoCo составил более 60%.
+
+![Отчет о тестировании `file-analysis-service`](docs/jacoco-analysis-report.png)
 
 ### Swagger/Postman
 
