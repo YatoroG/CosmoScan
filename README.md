@@ -50,7 +50,7 @@
 | PUT     | `api/storage/documents/{documentId}`   | Измененные данные документа  | Редактирование данных документа                                              |
 | PUT     | `api/storage/students/{studentId}`     | Измененные данные студента   | Редактирование данных студента                                               |
 | DELETE  | `api/storage/documents/{documentId}`   | -                            | Удаление документа                                                           |
-| DELETE  | `api/storage/students/{studentId}`     | -                            | Удаление студента (каскадное удаление его документов)   
+| DELETE  | `api/storage/students/{studentId}`     | -                            | Удаление студента (каскадное удаление его документов)                        |
 
 #### База данных
 
@@ -178,6 +178,8 @@
 Основные сервисы и контроллеры были покрыты юнит-тестами с использованием мока. Общий процент покрытия по JaCoCo составил более 60%.
 
 ![Отчет о тестировании `file-analysis-service`](docs/jacoco-analysis-report.png)
+
+![Отчет о тестировании `file-storing-service`](docs/jacoco-storing-report.png)
 
 ### Swagger/Postman
 

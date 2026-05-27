@@ -39,13 +39,13 @@ public class StudentController {
                 request.patronymic(), request.groupName());
     }
 
-    @PutMapping("/{student_id}")
+    @PutMapping("/{id}")
     public Student updateStudent(@PathVariable Long id,
                                                  @RequestBody StudentUpdateRequest request) {
         return studentService.updateStudent(id, request);
     }
 
-    @DeleteMapping("/{student_id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
